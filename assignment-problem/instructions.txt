@@ -6,13 +6,77 @@ HINT: Have a brief look at the app code to configure your images correctly!
 2) Launch a container for each created image, making sure, 
 that the app inside the container works correctly and is usable.
 
+
+    1.a) 
+        Dockerfile:
+        FROM python
+        WORKDIR /app
+        COPY . /app
+        CMD ["python", "bmi.py"]
+
+        Run:
+        docker build -t python:latest .
+        //writing image sha256:ae9b8e559435f17f5d0b6b0673dcd60f6ed4c4946fa0bf3bc02e6f85727bc4b9
+
+        docker run -it  sha256:ae9b8e559435f17f5d0b6b0673dcd60f6ed4c4946fa0bf3bc02e6f85727bc4b9
+
+        docker start -a -i elegant_cerf
+        // elegant_cerf - container name
+
+    1.b)
+        Dockerfile:
+        FROM node
+        WORKDIR /app
+        COPY package.json /app
+        RUN npm install
+        COPY . /app
+        EXPOSE 80
+        CMD ["node", "server.js"]
+
+        Run:
+        docker build -t goals:latest .  
+        docker run -p 3000:3000 -d --rm --name node_app goals:latest
+
+
 3) Re-create both containers and assign names to both containers.
 Use these names to stop and restart both containers.
+
+
+    1.a) 
+        docker rm <CONTAINER ID>
+        docker run -it --name py_app_cont python:latest
+
+    1.b) 
+        docker stop <CONTAINER ID>
+        docker rm <CONTAINER ID>
+        docker run -p 3000:3000 -d --name node_app_cont goals:latest
+
+
 
 4) Clean up (remove) all stopped (and running) containers, 
 clean up all created images.
 
+        docker stop
+        docker rm
+        //docker image prune
+        docker rmi python goals
+
 5) Re-build the images - this time with names and tags assigned to them.
+
+    1.a)
+        docker build -t python:latest .
+
+    1.b)
+        docker build -t goals:latest .
+
 
 6) Run new containers based on the re-built images, ensuring that the containers
 are removed automatically when stopped.
+
+    1.a)
+        docker run -it --name py_app_cont --rm python:latest
+
+    1.b)
+        docker run -p 3000:3000 -d --rm --name node_app goals:latest
+        docker stop <CONTAINER ID>
+
